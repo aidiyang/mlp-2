@@ -80,13 +80,10 @@ typedef struct _net
 void forward(layer *former,layer *latter)
 {
     int i,j;
-    for(i=0;i<latter->num_neurons;i++)
-    {
+    for(i=0;i<latter->num_neurons;i++){
         float out=0;
         for(j=0;j<former->num_neurons;j++)
-        {
             out+=((former->neurons)[j].output)*((latter->neurons)[i].weights[j]);
-        }
         (latter->neurons)[i].output=latter->sigmod.origin(out);
     }
 }
@@ -94,14 +91,11 @@ void forward(layer *former,layer *latter)
 void backward(layer *former,layer *latter)
 {
     int i,j;
-    for(i=0;i<former->num_neurons;i++)
-    {
+    for(i=0;i<former->num_neurons;i++){
         float y=(former->neurons)[i].output;
         float sum=0;
         for(j=0;j<latter->num_neurons;j++)
-        {
             sum+=((latter->neurons)[j].delta) * ((latter->neurons)[j].weights[i]);
-        }
         (former->neurons)[i].delta=former->sigmod.derivative(y)*sum;
     }
 }
@@ -111,13 +105,8 @@ void updateweight(layer *former,layer *latter)
 {
     int i,j;
     for(i=0;i<latter->num_neurons;i++)
-    {
         for(j=0;j<former->num_neurons;j++)
-        {
             ((latter->neurons)[i].weights[j])+=eta*((latter->neurons)[i].delta)*((former->neurons)[j].output);
-        }
-        
-    }
 }
 
 void set_sigmod(layer *l,char sig)
@@ -153,9 +142,7 @@ void clear_layer(layer *l)
 {
     int i;
     for(i=0;i<(l->num_neurons);i++)
-    {
         (l->neurons)[i].output=0;
-    }
 }
 
 void init_layer(layer *l,int num_inputs,int num_neurons,char sig)
@@ -164,14 +151,10 @@ void init_layer(layer *l,int num_inputs,int num_neurons,char sig)
     l->num_neurons=num_neurons; 
     l->neurons=(neuron*)malloc(sizeof(neuron)*num_neurons);
     set_sigmod(l,sig);
-    for(i=0;i<num_neurons;i++)
-    {
+    for(i=0;i<num_neurons;i++){
         (l->neurons)[i].weights=(float *)malloc(sizeof(float)*num_inputs);
         for(j=0;j<num_inputs;j++)
-        {
             (l->neurons)[i].weights[j]=rand()/(float)(RAND_MAX)*2-1;
-        }
-        
     }
 }
 
@@ -179,9 +162,7 @@ void free_layer(layer *l,int num_inputs,int num_neurons)
 {
     int i;
     for(i=0;i<num_neurons;i++)
-    {
         free((l->neurons)[i].weights);
-    }
     free(l->neurons);
 }
 
@@ -212,36 +193,25 @@ void free_net(net *n,int num_layers,int *num_neurons)
 void train(net *n,int num_samples,sample *samples,int epochs)
 {
     int e,i,j;
-    for(e=0;e<epochs;e++)
-    {
-        for(i=0;i<num_samples;i++)
-        {
+    for(e=0;e<epochs;e++){
+        for(i=0;i<num_samples;i++){
             clear_layer(&(n->layers[0]));
             for(j=0;j<(samples[i].num_features);j++)
-            {
                 n->layers[0].neurons[samples[i].features[j].index-1].output=samples[i].features[j].attr;
-            }
 
             for(j=1;j<n->num_layers;j++)
-            {
                 forward(&(n->layers[j-1]),&(n->layers[j]));
-            }
 
-            for(j=0;j<samples[i].num_target;j++)
-            {
+            for(j=0;j<samples[i].num_target;j++){
                 float oj=n->layers[n->num_layers-1].neurons[j].output;
                 n->layers[n->num_layers-1].neurons[j].delta=n->layers[n->num_layers-1].sigmod.derivative(oj)*(samples[i].target-oj);
             }
 
             for(j=n->num_layers-1;j>0;j--)
-            {
                 backward(&(n->layers[j-1]),&(n->layers[j]));
-            }
 
             for(j=1;j<n->num_layers;j++)
-            {
                 updateweight(&(n->layers[j-1]),&(n->layers[j]));
-            }
         }
     }
 }
@@ -249,22 +219,16 @@ void train(net *n,int num_samples,sample *samples,int epochs)
 void predict(net *n,int num_test,sample* test_samples,float *scores)
 {
     int i,j;
-    for(i=0;i<num_test;i++)
-    {
+    for(i=0;i<num_test;i++){
         clear_layer(&(n->layers[0]));
         for(j=0;j<(test_samples[i].num_features);j++)
-        {
             n->layers[0].neurons[test_samples[i].features[j].index-1].output=test_samples[i].features[j].attr;
-        }
 
         for(j=1;j<n->num_layers;j++)
-        {
             forward(&(n->layers[j-1]),&(n->layers[j]));
-        }
+
         for(j=0;j<1;j++)
-        {
             scores[i]=n->layers[n->num_layers-1].neurons[j].output;
-        }
     }
 }
 
