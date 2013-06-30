@@ -1,7 +1,7 @@
 /*
- *  A multilayer perceptron,only support logstic 
+ *  A multilayer perceptron,support optional 
  *  sigmod,and one output.
- *  You must chang it yourself if you need.
+ *  You can add sigmod yourself if you need.
  *  I put every part of the net in heap.
  *  So you can build a very large net.
  *  Though it's not recommanded
