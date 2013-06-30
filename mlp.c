@@ -15,7 +15,7 @@
 
 #define MAX_LINE_LEN 4096
 
-#define EPOCHS 10
+#define EPOCHS 100000
 
 char* readline(FILE *input,char* line)
 {
@@ -99,8 +99,9 @@ int main(int argc,char *argv[]){
     srand(time(NULL));
 
     net mlpnet;
-    int layer_neurons[]={5000,10,5,1};
-    init_net(&mlpnet,4,layer_neurons);
+    int layer_neurons[]={2,10,5,1};
+    char sigmods[]={'l','l','l','l'};
+    init_net(&mlpnet,4,layer_neurons,sigmods);
     
     float *inputs=(float*)malloc(sizeof(float)*2);
 
