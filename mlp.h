@@ -61,6 +61,7 @@ typedef struct _neuron
 {
 	float output;
     float *weights;
+    float bias;
     float delta;
 } neuron;
 
@@ -81,7 +82,7 @@ void forward(layer *former,layer *latter)
 {
     int i,j;
     for(i=0;i<latter->num_neurons;i++){
-        float out=0;
+        float out=(latter->neurons)[i].bias;
         for(j=0;j<former->num_neurons;j++)
             out+=((former->neurons)[j].output)*((latter->neurons)[i].weights[j]);
         (latter->neurons)[i].output=latter->sigmod.origin(out);
@@ -107,6 +108,7 @@ void updateweight(layer *former,layer *latter)
     for(i=0;i<latter->num_neurons;i++)
         for(j=0;j<former->num_neurons;j++)
             ((latter->neurons)[i].weights[j])+=eta*((latter->neurons)[i].delta)*((former->neurons)[j].output);
+        
 }
 
 void set_sigmod(layer *l,char sig)
